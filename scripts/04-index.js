@@ -24,7 +24,7 @@ print("✅ Index supprimés (sauf _id).");
 print("\n── ÉTAPE 2 : AVANT index — Recherche par référence (articles) ──");
 
 const explainAvantReference = db.articles.find(
-  { reference: "RIZ-25KG" }
+  { reference: "HP001" }
 ).explain("executionStats");
 
 const statsAvant1 = explainAvantReference.executionStats;
@@ -55,12 +55,12 @@ print("   Type scan       : COLLSCAN");
 // ─────────────────────────────────────────
 print("\n── ÉTAPE 4 : AVANT index — Requête composée (article + date) ──");
 
-const articleRef = db.articles.findOne({ reference: "RIZ-25KG" })?._id;
+const articleRef = db.articles.findOne({ reference: "HP001" })?._id;
 
 let explainAvantCompose = null;
 if (articleRef) {
   explainAvantCompose = db.mouvements.find(
-    { article: articleRef, date: { $gte: new Date("2025-01-01") } }
+    { article: articleRef, date: { $gte: new Date("2026-06-01") } }
   ).explain("executionStats");
 
   const statsAvant3 = explainAvantCompose.executionStats;
@@ -68,6 +68,8 @@ if (articleRef) {
   print("   Docs examinés   : " + statsAvant3.totalDocsExamined);
   print("   Docs retournés  : " + statsAvant3.totalDocsReturned);
   print("   Temps exécution : " + statsAvant3.executionTimeMillis + " ms");
+} else {
+  print("   ⚠️  Article HP001 introuvable — étape ignorée.");
 }
 
 // ─────────────────────────────────────────
@@ -89,7 +91,7 @@ db.articles.createIndex(
 );
 print("✅ Index créé : articles.nom");
 
-// Index sur le type et la date des mouvements (requêtes fréquentes)
+// Index sur le type des mouvements (requêtes fréquentes)
 db.mouvements.createIndex(
   { type: 1 },
   { name: "idx_mouvements_type" }
@@ -130,7 +132,7 @@ print("✅ Index créé : users.email (unique)");
 print("\n── ÉTAPE 6 : APRÈS index — Recherche par référence (articles) ──");
 
 const explainApresReference = db.articles.find(
-  { reference: "RIZ-25KG" }
+  { reference: "HP001" }
 ).explain("executionStats");
 
 const statsApres1 = explainApresReference.executionStats;
@@ -170,7 +172,7 @@ print("\n── ÉTAPE 8 : APRÈS index — Requête composée (article + date) 
 
 if (articleRef) {
   const explainApresCompose = db.mouvements.find(
-    { article: articleRef, date: { $gte: new Date("2025-01-01") } }
+    { article: articleRef, date: { $gte: new Date("2026-06-01") } }
   ).explain("executionStats");
 
   const statsApres3 = explainApresCompose.executionStats;
