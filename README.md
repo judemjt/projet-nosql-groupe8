@@ -1,7 +1,7 @@
 # 📦 StockPro — Système de Gestion de Stock et d'Inventaire
 
 > Projet Base de Données Avancées — NoSQL / MongoDB  
-> Département Informatique — Année universitaire 2024/2025  
+
 > Libreville, Gabon
 
 ---
