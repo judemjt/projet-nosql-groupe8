@@ -12,10 +12,10 @@ print("\n========== 01 — OPÉRATIONS CRUD ==========\n");
 print("── 1. insertOne : Ajout d'un nouvel article ──");
 
 const insertResult = db.articles.insertOne({
-  nom: "Café Robusta 250g",
-  reference: "CAF-250G",
-  prix: 2500,
-  seuilAlerte: 30,
+  nom: "Écran Dell 24 pouces",
+  reference: "ECRAN-DELL-24",
+  prix: 120000,
+  seuilAlerte: 3,
   createdAt: new Date(),
   updatedAt: new Date(),
   __v: 0
@@ -39,9 +39,9 @@ const insertManyResult = db.fournisseurs.insertMany([
     __v: 0
   },
   {
-    nom: "Boulangerie Industrielle du Gabon",
+    nom: "Gabon Bureautique",
     contact: "Mme. Akaga Laure",
-    email: "contact@big.ga",
+    email: "contact@gabbureau.ga",
     telephone: "+241 01 88 99 00",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -64,7 +64,7 @@ articles.forEach(a => print("   → " + a.nom + " (" + a.reference + ") — " + 
 // ─────────────────────────────────────────
 print("\n── 4. findOne : Recherche par référence ──");
 
-const article = db.articles.findOne({ reference: "RIZ-25KG" });
+const article = db.articles.findOne({ reference: "HP001" });
 if (article) {
   print("✅ Trouvé : " + article.nom + " — Prix : " + article.prix + " FCFA");
 } else {
@@ -74,29 +74,29 @@ if (article) {
 // ─────────────────────────────────────────
 // 5. UPDATE ONE — Modifier le prix d'un article
 // ─────────────────────────────────────────
-print("\n── 5. updateOne : Mise à jour du prix du riz ──");
+print("\n── 5. updateOne : Mise à jour du prix de la Souris Dell ──");
 
 const updateOneResult = db.articles.updateOne(
-  { reference: "RIZ-25KG" },
+  { reference: "DELL001" },
   {
     $set: {
-      prix: 16000,
+      prix: 12000,
       updatedAt: new Date()
     }
   }
 );
 
 print("✅ Documents modifiés : " + updateOneResult.modifiedCount);
-const rizMaj = db.articles.findOne({ reference: "RIZ-25KG" });
-print("   Nouveau prix : " + rizMaj.prix + " FCFA");
+const sourisMaj = db.articles.findOne({ reference: "DELL001" });
+print("   Nouveau prix : " + sourisMaj.prix + " FCFA");
 
 // ─────────────────────────────────────────
-// 6. UPDATE MANY — Augmenter le seuil d'alerte de tous les articles alimentaires
+// 6. UPDATE MANY — Augmenter le seuil d'alerte des articles à seuil < 10
 // ─────────────────────────────────────────
-print("\n── 6. updateMany : Augmentation des seuils d'alerte ──");
+print("\n── 6. updateMany : Augmentation des seuils d'alerte (seuil < 10) ──");
 
 const updateManyResult = db.articles.updateMany(
-  { seuilAlerte: { $lt: 30 } },
+  { seuilAlerte: { $lt: 10 } },
   {
     $inc: { seuilAlerte: 5 },
     $set: { updatedAt: new Date() }
@@ -108,7 +108,7 @@ print("✅ Documents modifiés : " + updateManyResult.modifiedCount);
 // ─────────────────────────────────────────
 // 7. DELETE ONE — Supprimer le fournisseur de test
 // ─────────────────────────────────────────
-print("\n── 7. deleteOne : Suppression du fournisseur de test ──");
+print("\n── 7. deleteOne : Suppression du fournisseur Import-Export Nkembo ──");
 
 const deleteResult = db.fournisseurs.deleteOne(
   { nom: "Import-Export Nkembo" }
