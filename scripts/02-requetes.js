@@ -7,7 +7,7 @@ db = db.getSiblingDB("gestionStock");
 print("\n========== 02 — REQUÊTES AVANCÉES ==========\n");
 
 // ─────────────────────────────────────────
-// 1. FILTRE $gt — Articles dont le prix > 5000 FCFA
+// 1. FILTRE $gt — Articles dont le prix > 5 000 FCFA
 // ─────────────────────────────────────────
 print("── 1. $gt : Articles prix > 5 000 FCFA ──");
 
@@ -22,12 +22,12 @@ chersArticles.forEach(a =>
 print("   Total : " + chersArticles.length + " article(s)");
 
 // ─────────────────────────────────────────
-// 2. FILTRE $lt — Articles dont le prix < 1000 FCFA
+// 2. FILTRE $lt — Articles dont le prix < 50 000 FCFA
 // ─────────────────────────────────────────
-print("\n── 2. $lt : Articles prix < 1 000 FCFA ──");
+print("\n── 2. $lt : Articles prix < 50 000 FCFA ──");
 
 const peuChers = db.articles.find(
-  { prix: { $lt: 1000 } },
+  { prix: { $lt: 50000 } },
   { nom: 1, prix: 1 }
 ).toArray();
 
@@ -36,12 +36,12 @@ peuChers.forEach(a =>
 );
 
 // ─────────────────────────────────────────
-// 3. FILTRE $gte $lte — Articles entre 1000 et 10000 FCFA
+// 3. FILTRE $gte $lte — Articles entre 10 000 et 100 000 FCFA
 // ─────────────────────────────────────────
-print("\n── 3. $gte / $lte : Articles entre 1 000 et 10 000 FCFA ──");
+print("\n── 3. $gte / $lte : Articles entre 10 000 et 100 000 FCFA ──");
 
 const gameMoyenne = db.articles.find(
-  { prix: { $gte: 1000, $lte: 10000 } },
+  { prix: { $gte: 10000, $lte: 100000 } },
   { nom: 1, prix: 1 }
 ).sort({ prix: 1 }).toArray();
 
@@ -65,31 +65,31 @@ mouvEntreeTransfert.forEach(m =>
 print("   Total : " + mouvEntreeTransfert.length + " mouvement(s)");
 
 // ─────────────────────────────────────────
-// 5. EXPRESSION RÉGULIÈRE — Recherche d'articles contenant "kg"
+// 5. EXPRESSION RÉGULIÈRE — Recherche d'articles contenant "Dell"
 // ─────────────────────────────────────────
-print("\n── 5. Regex : Articles contenant 'kg' (insensible casse) ──");
+print("\n── 5. Regex : Articles contenant 'Dell' (insensible casse) ──");
 
-const articlesKg = db.articles.find(
-  { nom: { $regex: /kg/i } },
+const articlesDell = db.articles.find(
+  { nom: { $regex: /dell/i } },
   { nom: 1, reference: 1 }
 ).toArray();
 
-articlesKg.forEach(a =>
+articlesDell.forEach(a =>
   print("   🔎 " + a.nom + " [" + a.reference + "]")
 );
 
 // ─────────────────────────────────────────
-// 6. EXPRESSION RÉGULIÈRE — Fournisseurs dont le nom commence par une lettre majuscule G
+// 6. EXPRESSION RÉGULIÈRE — Fournisseurs dont le nom commence par "T"
 // ─────────────────────────────────────────
-print("\n── 6. Regex : Fournisseurs dont le nom commence par 'G' ──");
+print("\n── 6. Regex : Fournisseurs dont le nom commence par 'T' ──");
 
-const fournG = db.fournisseurs.find(
-  { nom: { $regex: /^G/ } },
-  { nom: 1, email: 1 }
+const fournT = db.fournisseurs.find(
+  { nom: { $regex: /^T/ } },
+  { nom: 1, contact: 1 }
 ).toArray();
 
-fournG.forEach(f =>
-  print("   🏭 " + f.nom + " — " + f.email)
+fournT.forEach(f =>
+  print("   🏭 " + f.nom + " — " + f.contact)
 );
 
 // ─────────────────────────────────────────
@@ -107,7 +107,7 @@ articlesTriesPrix.forEach((a, i) =>
 );
 
 // ─────────────────────────────────────────
-// 8. TRI sort() — Mouvements triés par date décroissante
+// 8. TRI sort() — 5 derniers mouvements par date décroissante
 // ─────────────────────────────────────────
 print("\n── 8. sort() : 5 derniers mouvements ──");
 
@@ -155,17 +155,18 @@ articlesPage2.forEach(a =>
 );
 
 // ─────────────────────────────────────────
-// 11. COMBINAISON — Articles chers et en alerte basse
+// 11. COMBINAISON — Articles coûteux avec seuil d'alerte bas
+//     Prix > 10 000 FCFA ET seuilAlerte <= 10
 // ─────────────────────────────────────────
-print("\n── 11. Combiné : Articles prix > 5000 et seuil > 20 ──");
+print("\n── 11. Combiné : Articles prix > 10 000 FCFA et seuil ≤ 10 ──");
 
 const articlesAlerte = db.articles.find(
   {
-    prix: { $gt: 5000 },
-    seuilAlerte: { $gt: 20 }
+    prix: { $gt: 10000 },
+    seuilAlerte: { $lte: 10 }
   },
   { nom: 1, prix: 1, seuilAlerte: 1 }
-).sort({ seuilAlerte: -1 }).toArray();
+).sort({ prix: -1 }).toArray();
 
 articlesAlerte.forEach(a =>
   print("   ⚠️  " + a.nom + " — Prix: " + a.prix + " — Seuil: " + a.seuilAlerte)
